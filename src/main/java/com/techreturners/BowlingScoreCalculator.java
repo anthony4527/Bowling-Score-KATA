@@ -1,5 +1,7 @@
 package com.techreturners;
 
+import javax.swing.*;
+
 public class BowlingScoreCalculator {
 
     private final int fullScoreforThrow = 10;
@@ -9,24 +11,29 @@ public class BowlingScoreCalculator {
         int[] scoreForFrame = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         int resultScore = 0;
         String[] pinsforFrame;
-        boolean currentStrike = false;
-        boolean previousStrike = false;
         int tempScore = 0;     //temp value before adjustment
 
         // split the input string by space to get the pin for each throw
         // sum the pin for each throw and add to the scoreForFrame
         pinsforFrame = pinRecord.split(" ");
-        //System.out.println(pinsforFrame.length);
 
         for (int i = 0; i < pinsforFrame.length; i++) {
             tempScore = 0;
             // if pinsforFrmae is 'x', score is 10; make a note for the next two throws for add
             if (pinsforFrame[i].equals("x")) {
                 tempScore += fullScoreforThrow;
-                currentStrike = true;
 
             } else {
-                tempScore = Character.getNumericValue(pinsforFrame[i].charAt(0)) + Character.getNumericValue(pinsforFrame[i].charAt(1));
+                // if pin record has a '-', ignore it and only use the numeric
+                for (int j=0; j<2; j++ ){
+                    switch (pinsforFrame[i].charAt(j)){
+                        case '-':
+                            break;
+                        default:
+                            tempScore +=Character.getNumericValue(pinsforFrame[i].charAt(j));
+                    }
+                }
+
             }
             //check if this is more than 10 frames, the score should be added to the last frame
             //otherwise put tempScore to current frame
