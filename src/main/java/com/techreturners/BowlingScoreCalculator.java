@@ -1,6 +1,5 @@
 package com.techreturners;
 
-import javax.swing.*;
 
 public class BowlingScoreCalculator {
 
@@ -8,6 +7,7 @@ public class BowlingScoreCalculator {
     private final int MaxFrame = 10;
     private final char Spare = '/';
     private final char Missed = '-';
+    private final char Strike = 'x';
 
     public int calculate(String pinRecord) {
         int[] scoreForFrame = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -21,26 +21,22 @@ public class BowlingScoreCalculator {
 
         for (int i = 0; i < pinsforFrame.length; i++) {
             tempScore = 0;
-            // if pinsforFrmae is 'x', score is 10;
-            if (pinsforFrame[i].equals("x")) {
-                tempScore += fullScoreforThrow;
-            } else  {
-                // if pin record has a '-', ignore it and only use the numeric
-                // if pin record has a '/', score is 10 and set a flag for next throw to add
-                for (int j=0; j< pinsforFrame[i].length(); j++ ){
-                    switch (pinsforFrame[i].charAt(j)){
-                        case Missed:
-                            break;
-                        case Spare:   // this will always come as the 2nd value; if the 1st roll knocks all pin, then it will have been a strike
-                            tempScore = fullScoreforThrow;
-                            break;
-                        default:
-                            tempScore +=Character.getNumericValue(pinsforFrame[i].charAt(j));
-                    }
+            // if pin record is 'x', score is 10;
+            // if pin record has a '-', ignore it and only use the numeric
+            // if pin record has a '/', score is 10
+            for (int j=0; j< pinsforFrame[i].length(); j++ ){
+                switch (pinsforFrame[i].charAt(j)){
+                    case Missed:
+                        break;
+                    case Strike, Spare:   // Spare will always come as the 2nd value; if the 1st roll knocks all pin, then it will have been a strike
+                        tempScore = fullScoreforThrow;
+                        break;
+                    default:
+                        tempScore +=Character.getNumericValue(pinsforFrame[i].charAt(j));
                 }
             }
             //check if this is more than 10 frames, the score should be added to the last frame
-            //otherwise put tempScore to current frame
+            //otherwise put tempScore to current frame score
             if (i< MaxFrame){
                 scoreForFrame[i] += tempScore;
                 if ((i > 0) && (pinsforFrame[i - 1].equals("x"))) {
@@ -86,3 +82,4 @@ public class BowlingScoreCalculator {
         return resultScore;
     }
 }
+
