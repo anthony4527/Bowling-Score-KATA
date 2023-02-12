@@ -19,6 +19,15 @@ public class BowlingScoreCalculator {
         // sum the pin for each throw and add to the scoreForFrame
         pinsforFrame = pinRecord.split(" ");
 
+        //check for missing or invalid input in the pins record
+        //if less than 10 records, return error
+        //if more than 12 records, return error
+        if ((pinsforFrame.length < MaxFrame) || (pinsforFrame.length > MaxFrame +2 )){
+            System.out.println("The pins records input are not correct - missing or too many");
+            return -1;
+        }
+
+        //Start calculation by read each record
         for (int i = 0; i < pinsforFrame.length; i++) {
             tempScore = 0;
             // if pin record is 'x', score is 10;
