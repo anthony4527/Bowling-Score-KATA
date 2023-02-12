@@ -44,6 +44,11 @@ public class BowlingScoreCalculator {
                         tempScore +=Character.getNumericValue(pinsforFrame[i].charAt(j));
                 }
             }
+            //check if tempScore > 10, there is error input
+            if (tempScore>10) {
+                System.out.println("The pins records input are not correct - missing or too many");
+                return -1;
+            }
             //check if this is more than 10 frames, the score should be added to the last frame
             //otherwise put tempScore to current frame score
             if (i< MaxFrame){
@@ -78,7 +83,10 @@ public class BowlingScoreCalculator {
                 else { //add two rolls to the last Frame
                     scoreForFrame[MaxFrame-1] += tempScore;
                     // if 9th frame is also a strike, add first roll to 9th frame too
-                    scoreForFrame[MaxFrame-2] += Character.getNumericValue(pinsforFrame[i].charAt(0));
+                    if (pinsforFrame[MaxFrame-2].equals("x")){
+                        scoreForFrame[MaxFrame-2] += Character.getNumericValue(pinsforFrame[i].charAt(0));
+                    }
+
                 }
             }
 
