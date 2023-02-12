@@ -60,7 +60,7 @@ public class BowlingScoreCalculator {
                 }
             }
             //check if tempScore > 10, there is error input
-            if (tempScore>10) {
+            if (tempScore> fullScoreforThrow  ) {
                 System.out.println("The pins records input are not correct - missing or too many");
                 return -1;
             }
@@ -79,7 +79,7 @@ public class BowlingScoreCalculator {
                     //put the tempScore value to current frame score
                     scoreForFrame[i] += tempScore;
                     //if current record is a strike or spare, add to previous frame(s)
-                    if ((i > 0) && (pinsforFrame[i - 1].equals("x"))) {
+                    if ((i > 0) && (pinsforFrame[i - 1].equals(Character.toString(Strike)))) {
                         scoreForFrame[i - 1] += tempScore;
                     } else {
                         // check if previous frame is a spare and then add bonus
@@ -92,7 +92,7 @@ public class BowlingScoreCalculator {
                         }
                     }
                     //if current throw is 2nd roll after strike, add the score the previous strike frame
-                    if ((i>1) && (pinsforFrame[i-2].equals("x")) && (pinsforFrame[i].length() ==1)) {
+                    if ((i>1) && (pinsforFrame[i-2].equals(Character.toString(Strike))) && (pinsforFrame[i].length() ==1)) {
                         scoreForFrame[i - 2] += tempScore;
                     }
                     break;
@@ -102,7 +102,7 @@ public class BowlingScoreCalculator {
                     // add the score for additional throws to the 10th frame
                     scoreForFrame[MaxFrame-1] += tempScore;
                     // if the 9th frame is also a strike and this is the 11th throw, add the first roll to the 9th frame
-                    if ((pinsforFrame[MaxFrame-2].equals("x")) && (i== MaxFrame)) {
+                    if ((pinsforFrame[MaxFrame-2].equals(Character.toString(Strike))) && (i== MaxFrame)) {
                         if (pinsforFrame[i].length() == 1) {
                             scoreForFrame[MaxFrame-2] += tempScore;
                         } else {
