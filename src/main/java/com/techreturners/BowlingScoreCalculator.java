@@ -13,15 +13,14 @@ public class BowlingScoreCalculator {
         int[] scoreForFrame = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         int resultScore = 0;
         String[] pinsforFrame;
-        int tempScore = 0;     //temp value before adjustment
+        int tempScore = 0;   //temp value before adjustment
+        char isNormalFrame = 'Y';
 
         // split the input string by space to get the pin for each throw
         // sum the pin for each throw and add to the scoreForFrame
         pinsforFrame = pinRecord.split(" ");
 
-        //check for missing or invalid input in the pins record
-        //if less than 10 records, return error
-        //if more than 12 records, return error
+        //if less than 10 records OR more than 12 records, return error
         if ((pinsforFrame.length < MaxFrame) || (pinsforFrame.length > MaxFrame +2 )){
             System.out.println("The pins records input are not correct - missing or too many");
             return -1;
@@ -65,54 +64,61 @@ public class BowlingScoreCalculator {
                 System.out.println("The pins records input are not correct - missing or too many");
                 return -1;
             }
+
             //check if this is more than 10 frames, the score should be added to the last frame
             //otherwise put tempScore to current frame score
+            //handle different cases for 1st to 10th frame, add additional records for 11th or 12th throw
             if (i< MaxFrame){
-                scoreForFrame[i] += tempScore;
-                if ((i > 0) && (pinsforFrame[i - 1].equals("x"))) {
-                    scoreForFrame[i - 1] += tempScore;
-                } else {
-                    // check if previous frame is a spare and then add bonus
-                    if ((i>0) && (pinsforFrame[i-1].charAt(1) == Spare)){
-                        if (pinsforFrame[i].length() ==1){
-                            scoreForFrame[i-1] += tempScore;
-                        } else {
-                            scoreForFrame[i-1] += Character.getNumericValue(pinsforFrame[i].charAt(0)) ;
+                isNormalFrame = 'Y';
+            }else{
+                isNormalFrame = 'N';
+            }
+            switch( isNormalFrame) {
+                case ('Y'):
+                    //cases for 1st to 10 frames
+                    //put the tempScore value to current frame score
+                    scoreForFrame[i] += tempScore;
+                    //if current record is a strike or spare, add to previous frame(s)
+                    if ((i > 0) && (pinsforFrame[i - 1].equals("x"))) {
+                        scoreForFrame[i - 1] += tempScore;
+                    } else {
+                        // check if previous frame is a spare and then add bonus
+                        if ((i>0) && (pinsforFrame[i-1].charAt(1) == Spare)){
+                            if (pinsforFrame[i].length() ==1){
+                                scoreForFrame[i-1] += tempScore;
+                            } else {
+                                scoreForFrame[i-1] += Character.getNumericValue(pinsforFrame[i].charAt(0)) ;
+                            }
                         }
                     }
-                }
-                //if current throw is 2nd roll after strike, add the score the previous strike frame
-                if ((i>1) && (pinsforFrame[i-2].equals("x")) && (pinsforFrame[i].length() ==1)) {
-                    scoreForFrame[i - 2] += tempScore;
-                }
-
-            } else {
-                // add the score for additional frame after the 10th
-                // if this frame has one roll, add to 10th for strike or spare
-                // if 9th is also a strike, add to 10th frame too
-                if (pinsforFrame[i].length() == 1) {
-                    scoreForFrame[MaxFrame-1] += tempScore;
-                    if ((pinsforFrame[MaxFrame-2].equals("x")) && (i == MaxFrame)) {
-                        scoreForFrame[MaxFrame-2] += tempScore;
+                    //if current throw is 2nd roll after strike, add the score the previous strike frame
+                    if ((i>1) && (pinsforFrame[i-2].equals("x")) && (pinsforFrame[i].length() ==1)) {
+                        scoreForFrame[i - 2] += tempScore;
                     }
-                }
-                else { //add two rolls to the last Frame
-                    scoreForFrame[MaxFrame-1] += tempScore;
-                    // if 9th frame is also a strike, add first roll to 9th frame too
-                    if (pinsforFrame[MaxFrame-2].equals("x")){
-                        scoreForFrame[MaxFrame-2] += Character.getNumericValue(pinsforFrame[i].charAt(0));
-                    }
+                    break;
 
-                }
+                case ('N'):
+                    // cases of throws after 10th frames
+                    // add the score for additional throws to the 10th frame
+                    scoreForFrame[MaxFrame-1] += tempScore;
+                    // if the 9th frame is also a strike and this is the 11th throw, add the first roll to the 9th frame
+                    if ((pinsforFrame[MaxFrame-2].equals("x")) && (i== MaxFrame)) {
+                        if (pinsforFrame[i].length() == 1) {
+                            scoreForFrame[MaxFrame-2] += tempScore;
+                        } else {
+                            scoreForFrame[MaxFrame-2] += Character.getNumericValue(pinsforFrame[i].charAt(0));
+                        }
+                    }
+                    break;
             }
-
         } // end for all pinRecord
 
+        //add all frames adjusted scores and return
         for (int i = 0; i < scoreForFrame.length; i++) {
             resultScore += scoreForFrame[i];
-            System.out.println("final score for "+i+" is "+ scoreForFrame[i]);
         }
         return resultScore;
     }
+
 }
 
