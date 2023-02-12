@@ -37,11 +37,27 @@ public class BowlingScoreCalculator {
                 switch (pinsforFrame[i].charAt(j)){
                     case Missed:
                         break;
-                    case Strike, Spare:   // Spare will always come as the 2nd value; if the 1st roll knocks all pin, then it will have been a strike
+                    case Strike:
+                        // check if this pinRecord has two data, it is error and should stop
+                        if (pinsforFrame[i].length() > 1){
+                            System.out.println("The pins records input are not correct - missing or too many");
+                            return -1;
+                        } else {
+                            tempScore = fullScoreforThrow;
+                        }
+                        break;
+                    case Spare:
                         tempScore = fullScoreforThrow;
                         break;
                     default:
-                        tempScore +=Character.getNumericValue(pinsforFrame[i].charAt(j));
+                        //check if it is not alphanumeric, return error
+                        if (Character.isDigit(pinsforFrame[i].charAt(j)) ) {
+                            tempScore +=Character.getNumericValue(pinsforFrame[i].charAt(j));
+                        } else {
+                            System.out.println("The pins records input are not correct - missing or too many");
+                            return -1;
+                        }
+
                 }
             }
             //check if tempScore > 10, there is error input
